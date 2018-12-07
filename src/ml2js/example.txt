@@ -2,7 +2,7 @@
 	{var type=int name=a}{/var}	
 	{assign target=a} 0 {/assign}
 	
-	{if condition= a==0}
+	{if condition= a<00 && a<=1}
 		{assign target=a} a+1 {/assign}
 		{assign target=a} a+1 {/assign}
 	{/if}

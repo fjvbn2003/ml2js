@@ -27,7 +27,7 @@ Program (Declarations d, Block b) {
    //program tree
    tree = new TreeNode("root");
 }
-
+// 멤버변수로 선언한 tree에 기존 decpart와 body의 내용을 담기 위해서 최소 1번은 실행해주어야 함.
 public void display(int k) {
    for (int w = 0; w < k; ++w) {
        //System.out.print("----");

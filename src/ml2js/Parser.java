@@ -253,7 +253,7 @@ Expression e = relation();
     }
 
     private Expression relation (){
-Expression e = addition();
+    	Expression e = addition();
 		
 		// relation goes until there's no more relational ops
 		while(isRelationalOp()){
@@ -400,14 +400,13 @@ Expression e = addition();
     }
    
 
-   public static void main(String args[]) {
+/*   public static void main(String args[]) {
         Parser parser  = new Parser(new Lexer(args[0]));
         Program prog = parser.program();
-        
         
         prog.display(0);
         // display abstract syntax tree
         prog.tree.print();
     } //main
-
+*/
 } // Parser
