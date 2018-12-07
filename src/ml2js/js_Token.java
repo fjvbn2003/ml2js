@@ -45,5 +45,5 @@ public class js_Token {
     } // keyword
     
     private js_TokenType type;
-    private String value = "";
+    public String value = "";
 }

@@ -242,7 +242,7 @@ public class Parser {
 Expression e = relation();
 		
 		// equality goes while there's an equality operator
-		while(isEqualityOp()){
+	while(isEqualityOp()){
 			Operator op = new Operator(token.value());
 			match(token.type());
 			Expression term2 = relation();
