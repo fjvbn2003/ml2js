@@ -25,8 +25,7 @@ public class TreeNode{
             Children.get(i).print(prefix + (isTail ? "    " : "¦¢   "), false);
         }
         if (Children.size() > 0) {
-            Children.get(Children.size() - 1)
-                    .print(prefix + (isTail ?"    " : "¦¢   "), true);
+            Children.get(Children.size() - 1).print(prefix + (isTail ?"    " : "¦¢   "), true);
         }
     }
     TreeNode parent;

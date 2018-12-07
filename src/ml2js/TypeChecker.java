@@ -4,21 +4,36 @@ import java.util.*;
 
 
 public class TypeChecker {
+	
+	private Program program;
 	//선언된 변수를 map에 담아서 반환해주는 함수
-	 public static TypeMap typing (Declarations d) {
+	public TypeChecker(Parser p) {
+		program = p.program();
+		System.out.println("\nBegin type checking...");
+		typing(program.decpart);
+		V(program);
+		System.out.println("\ntype checking is Finished.");
+		program.display(0);
+		program.tree.print();
+	}
+	public Program getProgram() {
+		return program;
+	}
+	
+	 public  TypeMap typing (Declarations d) {
 	        TypeMap map = new TypeMap();
 	        for (Declaration di : d) 
 	            map.put (di.v, di.t);
 	        return map;
 	    }
 	 
-	    public static void check(boolean test, String msg) {
+	    public  void check(boolean test, String msg) {
 	        if (test)  return;
 	        System.err.println(msg);
 	        System.exit(1);
 	    }
 	    // 선언부에 해당하는 부분의 유효성 검사
-	    public static void V (Declarations d) {
+	    public  void V (Declarations d) {
 	        for (int i=0; i<d.size() - 1; i++)
 	            for (int j=i+1; j<d.size(); j++) {
 	                Declaration di = d.get(i);
@@ -28,12 +43,12 @@ public class TypeChecker {
 	            }
 	    } 
 
-	    public static void V (Program p) {
+	    public  void V (Program p) {
 	        V (p.decpart);
 	        V (p.body, typing (p.decpart));
 	    } 
 	    
-	    public static Type typeOf (Expression e, TypeMap tm) {
+	    public  Type typeOf (Expression e, TypeMap tm) {
 	        if (e instanceof Value) return ((Value)e).type;
 	        if (e instanceof Variable) {
 	            Variable v = (Variable)e;
@@ -60,7 +75,7 @@ public class TypeChecker {
 	        throw new IllegalArgumentException("should never reach here");
 	    } 
 
-	    public static void V (Expression e, TypeMap tm) {
+	    public  void V (Expression e, TypeMap tm) {
 	        if (e instanceof Value) 
 	            return;
 	        if (e instanceof Variable) { 
@@ -107,7 +122,7 @@ public class TypeChecker {
 	        throw new IllegalArgumentException("should never reach here");
 	    }
 
-	    public static void V (Statement s, TypeMap tm) {
+	    public  void V (Statement s, TypeMap tm) {
 	        if ( s == null )
 	            throw new IllegalArgumentException( "AST error: null statement");
 	        if (s instanceof Skip) return;
@@ -179,7 +194,7 @@ public class TypeChecker {
 	        //throw new IllegalArgumentException("should never reach here");
 	    }
 
-	    public static void main(String args[]) {
+	   /* public static void main(String args[]) {
 	        Parser parser  = new Parser(new Lexer(args[0]));
 	        Program prog = parser.program();
 	        prog.display(0);          
@@ -191,5 +206,5 @@ public class TypeChecker {
 	        prog.tree.print();
 
 	    } //main
-	    
+*/	    
 }
