@@ -11,6 +11,7 @@ public class js_Token {
     public static final js_Token intTok = new js_Token(js_TokenType.Int, "Int");
     public static final js_Token assignmentTok = new js_Token(js_TokenType.Assignment, "Assignment");
     public static final js_Token blockTok = new js_Token(js_TokenType.Block, "Block");
+    public static final js_Token blockOutTok = new js_Token(js_TokenType.Block_out, "Block_out");
 
     public static final js_Token eqeqTok = new js_Token(js_TokenType.Equals, "==");
     public static final js_Token ltTok = new js_Token(js_TokenType.Less, "<");

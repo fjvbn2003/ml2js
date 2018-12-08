@@ -10,11 +10,13 @@ public class CodeGenerator {
 	private TreeNode tree;
 	private String token;
 	private ArrayList<String> token_list;
+	private boolean block_open;
 	
 	public CodeGenerator(TypeChecker t) {
 			program = t.getProgram();
 			tree = t.getProgram().tree;
 			token_list = new ArrayList<String>();
+			block_open = false;
 	}
 	public boolean generate() throws FileNotFoundException {
 		PrintWriter pw = new PrintWriter("C:\\Users\\youngju\\eclipse-workspace\\ml2js\\src\\ml2js\\ouput.txt");
@@ -33,13 +35,11 @@ public class CodeGenerator {
 		int i=0;
 		token = token_list.get(i);
 		while(token !=  null) {
-			//sb.append(token_list.get(i)+"\r\n");
 			if(i>= list_len)
 				break;
 			else {
 				token = token_list.get(i);
 			}
-			
 			
 			if(token.equals("root")) {
 				i++;
@@ -56,39 +56,91 @@ public class CodeGenerator {
 
 				}
 			}
-			else if(token.equals("Block")) {
-				i++;
-			}
 			else if(token.equals("Assignment")) {
 			
 				i++;//Variable id
 				token = token_list.get(i);
-				//!! 여기서부터 다시 코딩 시작. assignment 우변에 expression을 받도록 해야함..!! expression
-				//!! expression 만들어 놓으면 conditional 에서도 사용가능. 잘 만들어 놓고 모듈화 시키기!!
+				
+				String id = token_list.get(i).split(" ")[1];
+				sb.append(id + " = ");
+				
+				i++;//value
+				token = token_list.get(i);
+				
+				//  single value
 				if(isType()) {
-					String id = token_list.get(i).split(" ")[1];
-					sb.append(id + " = ");
-					
+					String value = token_list.get(i).split(" ")[1];
+					sb.append(value+";\r\n");
+				}
+				// not a single value. case of Bynary expression!
+				else {
+					while(isBinary()) {
+						i++;//operator
+						token = token_list.get(i);
+						String operator = String.valueOf(token);
+						i++;//first operand
+						token = token_list.get(i);
+						String first_operand = String.valueOf(token.split(" ")[1]);
+						i++;//second operand
+						token = token_list.get(i);
+						String second_operand =String.valueOf(token.split(" ")[1]);
+						sb.append(first_operand+operator+second_operand);
+					}
+					sb.append(";\r\n");
+				}
+				i++;		
+			}
+			
+			//conditional statement
+			else if(token.equals("Conditional") ||token.equals("Loop")) {
+				if(token.equals("Conditional")) {
+					sb.append("if(");	
+				}else {
+					sb.append("while(");
+				}
+				
+				i++;//Binary or single value
+				token = token_list.get(i);
+				if(isType()) {
 					i++;//value
 					token = token_list.get(i);
-
+					String value = token_list.get(i).split(" ")[1];
+					sb.append(value+";\r\n");
 				}
-				//!! 여기서부터 다시 코딩 시작. assignment 우변에 expression을 받도록 해야함..!! expression
-				//!! expression 만들어 놓으면 conditional 에서도 사용가능. 잘 만들어 놓고 모듈화 시키기!!
-				
-				String value = token_list.get(i).split(" ")[1];
-				sb.append(value + ";\r\n");
-				
-				i++;
-				token = token_list.get(i);
+				// not a single value. case of Bynary expression!
+				else {
+					while(isBinary()) {
+						i++;//operator
+						token = token_list.get(i);
+						String operator = String.valueOf(token);
+						i++;//first operand
+						token = token_list.get(i);
+						String first_operand = String.valueOf(token.split(" ")[1]);
+						i++;//second operand
+						token = token_list.get(i);
+						String second_operand =String.valueOf(token.split(" ")[1]);
+						sb.append(first_operand+operator+second_operand);
+					}
+				}
+				sb.append(")");
+				i++;	
 			}
-			else if(token.equals("Conditional")) {
+			
+
+			
+			//block_keyword
+			else if(isBlock()) {
+				sb.append("{ \r\n");
+				block_open = true;
 				i++;
-		/*		while(token.equals("Binary")) {
-					i++;//operation token
-					String op = token_list.get(i);
-					
-				}*/
+
+			}
+			//block_out_keyword
+			else if(isBlock_out()) {
+				sb.append("} \r\n");
+				block_open = false;
+				i++;
+
 			}
 			else {
 				i++;
@@ -106,15 +158,19 @@ public class CodeGenerator {
 		node_stack.add(tree);
 		while(node_stack.isEmpty() == false) {
 			TreeNode current_node = node_stack.pop();
-			token_list.add(current_node.data);
 			
+			token_list.add(current_node.data);
 			int length = current_node.Children.size();
 			for(int i=length-1; i>=0; i--) {
+				if(current_node.Children.get(i).data.equals("Block")) {
+					node_stack.add(new TreeNode("Block_out"));
+				}
 				node_stack.add(current_node.Children.get(i));
+				
 			}
 		}
 		return ;
-	}
+	}/*
     private boolean isAddOp( ) {
         return token.equals(js_Token.plusTok.value) ||
                token.equals(js_Token.minusTok.value);
@@ -140,17 +196,23 @@ public class CodeGenerator {
                token.equals(js_Token.lteqTok.value) || 
                token.equals(js_Token.gtTok.value) ||
                token.equals(js_Token.gteqTok.value);
-    }
+    }*/
     
     private boolean isType( ) {
-        return token.equals(js_Token.intTok.value)
-            || token.equals(js_Token.variableTok.value);
+        return token.split(" ")[0].equals(js_Token.intTok.value)
+            || token.split(" ")[0].equals(js_Token.variableTok.value);
     }
-        
+    
+    private boolean isBinary() {
+    	return token.equals(js_Token.BinaryTok.value);
+    }
 	
-	
-	
-	
+    private boolean isBlock() {
+    	return token.equals(js_Token.blockTok.value);
+    }
+    private boolean isBlock_out() {
+    	return token.equals(js_Token.blockOutTok.value);
+    }
 	
 	 public static void main(String args[]) {
 		 

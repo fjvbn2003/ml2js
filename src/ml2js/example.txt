@@ -1,13 +1,13 @@
 {ml2js}
 	{var type=int name=a}{/var}	
-	{assign target=a} 0 {/assign}
+	{assign target=a}0{/assign}
 	
-	{if condition=  a<=1}
-		{assign target=a} a+1 {/assign}
-		{assign target=a} a+1 {/assign}
+	{if condition=  a>1}
+		{assign target=a} 100 {/assign}
+		
 	{/if}
 	{while condition= a<10}
-		{assign target=a} a+1 {/assign}
+		{assign target=a} a+1 {/assign}		
 	{/while}
 {/ml2js}
 
