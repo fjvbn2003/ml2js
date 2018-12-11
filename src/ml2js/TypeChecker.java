@@ -179,6 +179,14 @@ public class TypeChecker {
 	                check ( false, "poorly typed test in while Loop in Conditional: " + l.test);
 	            }
 	        }
+	        
+	        
+	        else if (s instanceof Alert) {
+	        	Alert a = (Alert) s;
+	        	
+	        }
+
+	        
 	     
 	        //Clite에서 Block-statement의 유효성 검사는 block 내부에 있는 모든 statement가
 	        //모두 유효한지 검사함으로써 확인이 가능하다.
@@ -194,7 +202,7 @@ public class TypeChecker {
 	        //throw new IllegalArgumentException("should never reach here");
 	    }
 
-	   /* public static void main(String args[]) {
+	  /*  public static void main(String args[]) {
 	        Parser parser  = new Parser(new Lexer(args[0]));
 	        Program prog = parser.program();
 	        prog.display(0);          
@@ -206,5 +214,5 @@ public class TypeChecker {
 	        prog.tree.print();
 
 	    } //main
-*/	    
+	    */
 }

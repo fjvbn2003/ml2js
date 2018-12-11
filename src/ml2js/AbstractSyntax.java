@@ -93,7 +93,7 @@ public String toString ( ) { return id; }
 }
 
 abstract class Statement {
-// Statement = Skip | Block | Assignment | Conditional | Loop
+// Statement = Skip | Block | Assignment | Conditional | Loop |Alert
 	   public void display(int k, TreeNode t) {
 	   }
 }
@@ -125,6 +125,10 @@ Assignment (Variable t, Expression e) {
    target = t;
    source = e;
 }
+
+
+
+
 public void display(int k, TreeNode t) {
    for (int w = 0; w < k; ++w) {
        //System.out.print("----");
@@ -137,6 +141,25 @@ public void display(int k, TreeNode t) {
 }
 
 }
+
+class Alert extends Statement {
+	// Assignment = Variable target; Expression source
+	Variable id;
+	TreeNode alertTree;
+
+	public Alert (Variable t) {
+	   id = t;
+	}
+	public void display(int k, TreeNode t) {
+		   for (int w = 0; w < k; ++w) {
+		       //System.out.print("----");
+		   }
+		   alertTree = new TreeNode("Alert", t);	
+		   //System.out.println("Loop :");
+		   id.display(++k,alertTree);
+		}
+}
+
 
 class Conditional extends Statement {
 //Conditional = Expression test; Statement thenbranch, elsebranch

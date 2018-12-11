@@ -5,6 +5,8 @@ public class js_Token {
 
     private static final String[] reserved = new String[KEYWORDS];
     private static js_Token[] js_Token = new js_Token[KEYWORDS];
+    public static final js_Token alertTok = new js_Token(js_TokenType.Alert, "alert");
+    
     public static final js_Token eofTok = new js_Token(js_TokenType.Eof, "<<EOF>>");
     public static final js_Token variableTok = new js_Token(js_TokenType.Variable, "Variable");
     public static final js_Token BinaryTok = new js_Token(js_TokenType.Binary, "Binary");

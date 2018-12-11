@@ -2,6 +2,7 @@ package ml2js;
 
 import java.util.*;
 
+
 public class Parser {
     // Recursive descent parser that inputs a C++Lite program and 
     // generates its abstract syntax.  Each method corresponds to
@@ -122,6 +123,10 @@ public class Parser {
     			else if(token.type() == TokenType.If)
     				return ifStatement();
     			
+    			else if(token.type() == TokenType.AlertText)
+    				return alertStatement();
+
+    			
     			// 토큰이 while일 경우 whileStatement()를 호출함으로써 새로운 whileStatement subtree를 생성
     			else if(token.type() == TokenType.While)
     				return whileStatement();
@@ -140,7 +145,22 @@ public class Parser {
     			return null;
     }
   
-    private Block statements () {
+    private Statement alertStatement() {
+		// TODO Auto-generated method stub
+    	match(TokenType.AlertText);
+		match(TokenType.RightBrace);
+		Variable v  = new Variable(token.value());
+		match(TokenType.Identifier);
+		match(TokenType.LeftBrace);
+		match(TokenType.Divide);
+		match(TokenType.AlertText);
+		match(TokenType.RightBrace);
+		match(TokenType.LeftBrace);
+		
+		return new Alert(v);
+	}
+
+	private Block statements () {
     	Block b = new Block();
 		// 새로운 block 객체 b의 멤버에 statement를 통해 반환된 statement 객체를 추가하면서 '}' 오른쪽 중괄호를 만날때 까지 반복.
 		while(token.type() != TokenType.Divide )
@@ -185,12 +205,23 @@ public class Parser {
     			match(TokenType.If);
     			match(TokenType.RightBrace);
     			match(TokenType.LeftBrace);
-
-    			Statement elsestatement =new Skip();
+    			Statement elsestatement  =new Skip();
+    			
+    			if(token.type() == TokenType.Else){
+    				match(TokenType.Else);
+        			match(TokenType.RightBrace);
+        			
+        			match(TokenType.LeftBrace);
+        			elsestatement = statements();
+           			match(TokenType.Divide);
+        			match(TokenType.Else);
+        			match(TokenType.RightBrace);
+        			match(TokenType.LeftBrace);
+    			}
     			
     			return new Conditional(expression, ifblock, elsestatement); 
     	}
-
+   
     private Loop whileStatement () {
     	// gobble up while
     		match(TokenType.While);
@@ -400,7 +431,7 @@ Expression e = relation();
     }
    
 
-/*   public static void main(String args[]) {
+   /*public static void main(String args[]) {
         Parser parser  = new Parser(new Lexer(args[0]));
         Program prog = parser.program();
         

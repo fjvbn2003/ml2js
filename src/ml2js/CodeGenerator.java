@@ -10,13 +10,13 @@ public class CodeGenerator {
 	private TreeNode tree;
 	private String token;
 	private ArrayList<String> token_list;
-	private boolean block_open;
+	private boolean else_block;
 	
 	public CodeGenerator(TypeChecker t) {
 			program = t.getProgram();
 			tree = t.getProgram().tree;
 			token_list = new ArrayList<String>();
-			block_open = false;
+			else_block = false;
 	}
 	public boolean generate() throws FileNotFoundException {
 		PrintWriter pw = new PrintWriter("C:\\Users\\youngju\\eclipse-workspace\\ml2js\\src\\ml2js\\ouput.txt");
@@ -40,11 +40,9 @@ public class CodeGenerator {
 			else {
 				token = token_list.get(i);
 			}
-			
 			if(token.equals("root")) {
 				i++;
 				token = token_list.get(i);
-
 			}
 			else if(token.equals("Declarations")) {
 				i++;
@@ -53,9 +51,17 @@ public class CodeGenerator {
 					sb.append("var "+token_list.get(i)+";\r\n");
 					i++;
 					token = token_list.get(i);
-
 				}
 			}
+			
+			else if(token.equals("Alert")) {
+				i++; //Variable id
+				// 변수 여러개 선언
+				String id = token_list.get(i).split(" ")[1];
+				sb.append("alert("+ id+");\r\n");
+				i++;
+			}
+			
 			else if(token.equals("Assignment")) {
 			
 				i++;//Variable id
@@ -92,7 +98,7 @@ public class CodeGenerator {
 			}
 			
 			//conditional statement
-			else if(token.equals("Conditional") ||token.equals("Loop")) {
+			else if(token.equals("Conditional") || token.equals("Loop")) {
 				if(token.equals("Conditional")) {
 					sb.append("if(");	
 				}else {
@@ -131,16 +137,19 @@ public class CodeGenerator {
 			//block_keyword
 			else if(isBlock()) {
 				sb.append("{ \r\n");
-				block_open = true;
 				i++;
-
 			}
 			//block_out_keyword
 			else if(isBlock_out()) {
 				sb.append("} \r\n");
-				block_open = false;
-				i++;
-
+				i++;//Block
+				if(token_list.size()>i) {
+					token = token_list.get(i);	
+				}
+				
+				if(isBlock()){
+					sb.append("else ");
+				}
 			}
 			else {
 				i++;
